@@ -12,3 +12,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+header {
+  background-color: black;
+  color: white;
+  height: 100px; 
+  text-align: center;  
+}
+
+h1{
+  padding-top: 25px; 
+}

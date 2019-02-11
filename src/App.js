@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Search from './Search.js';
 import List from './List.js';
 import Filter from './Filter.js';
-import { all } from 'q';
+
 
 
 class App extends Component {
@@ -11,7 +11,7 @@ class App extends Component {
     searchTerm: null,
     bookList: [], 
     printType: 'all',
-    bookType: 'full' 
+    bookType:  'full', 
   }
 
   userInput = (event) => {
@@ -20,32 +20,41 @@ class App extends Component {
     this.setState({
       searchTerm: searchValue, 
     })
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchValue}&key=AIzaSyBVwHBPcyE5hwVtKaWt-L250MlbWHbgs5Q`)
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchValue}&printType=${this.state.printType}&filter=${this.state.bookType}&key=AIzaSyBVwHBPcyE5hwVtKaWt-L250MlbWHbgs5Q`)
       .then(res => res.json())
       .then(responseJson => responseJson.items.map(item => {
-        let salePrice = "Free";
-        if (item.saleInfo.listPrice){
-          salePrice = item.saleInfo.listPrice.amount;
-        }
         return {
           title: item.volumeInfo.title,
           author: item.volumeInfo.authors,
           description: item.volumeInfo.description,
-          image: item.volumeInfo.imageLinks.thumbnail,
-          price: salePrice
+          image: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : "", 
+          price: item.saleInfo.listPrice ? item.saleInfo.listPrice.amount : 'Free'
         }
       }))
       .then(data => this.setState({
         bookList: data,
       }));
-
 }
   
+  handlePrintType = (event) => {
+    const printTypeValue  = event.currentTarget.value; 
+    this.setState({
+      printType: printTypeValue
+    })
+  }
+
+  handleBookType = (event) => {
+    const bookTypeValue = event.currentTarget.value;
+    this.setState({
+      bookType: bookTypeValue
+    })
+  }
+
   render(){
     return (
       <main className='App'>
         <Search userInput={this.userInput}></Search>
-        <Filter />
+        <Filter printType={this.handlePrintType} bookType={this.handleBookType}/>
         <List bookList={this.state.bookList} />
       </main>
     );
