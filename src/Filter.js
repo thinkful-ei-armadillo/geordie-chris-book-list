@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
+import "./Filter.css"
 
 class Filter extends Component {
     render () {
         return (
-            <div>
+            <div className="filter">
                 <label forhtml="print-type">Print Type:</label>
                 <select id="print-type" onChange={ this.props.printType }>
                     <option value="all">All</option>
